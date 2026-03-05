@@ -1,29 +1,1037 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Newton Apps</title>
-<link rel="stylesheet" href="style.css">
-</head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Newton Apps — Structured Intelligence for Personal Decision-Makers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #060608;
+      --surface: #0d0d12;
+      --surface2: #13131a;
+      --border: rgba(255,255,255,0.07);
+      --gold: #c8a96e;
+      --gold-dim: rgba(200,169,110,0.15);
+      --gold-glow: rgba(200,169,110,0.08);
+      --white: #f0ede8;
+      --muted: rgba(240,237,232,0.45);
+      --accent: #4a9eff;
+    }
 
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.6;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 48px;
+      background: linear-gradient(to bottom, rgba(6,6,8,0.95), transparent);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .nav-logo-icon {
+      width: 34px;
+      height: 34px;
+    }
+
+    .nav-logo-text {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      overflow: hidden;
+    }
+
+    .hero-bg-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+    }
+    .orb-1 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(200,169,110,0.12) 0%, transparent 70%);
+      top: -100px; left: 50%;
+      transform: translateX(-50%);
+      animation: orb-float 8s ease-in-out infinite;
+    }
+    .orb-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(74,158,255,0.07) 0%, transparent 70%);
+      bottom: 0; right: -100px;
+      animation: orb-float 10s ease-in-out infinite reverse;
+    }
+
+    @keyframes orb-float {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-30px); }
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid var(--gold-dim);
+      padding: 6px 16px;
+      border-radius: 100px;
+      margin-bottom: 32px;
+      animation: fade-up 0.8s ease both;
+    }
+
+    .hero-eyebrow svg { width: 12px; height: 12px; }
+
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(52px, 8vw, 108px);
+      font-weight: 300;
+      line-height: 1.0;
+      letter-spacing: -0.01em;
+      margin-bottom: 24px;
+      animation: fade-up 0.8s 0.1s ease both;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .hero-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(16px, 2.5vw, 22px);
+      font-weight: 300;
+      color: var(--muted);
+      max-width: 560px;
+      line-height: 1.65;
+      margin-bottom: 48px;
+      animation: fade-up 0.8s 0.2s ease both;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fade-up 0.8s 0.3s ease both;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--gold);
+      color: #060608;
+      font-family: 'Syne', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 14px 28px;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-primary:hover { background: #d4b87a; transform: translateY(-1px); }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--white);
+      font-family: 'Syne', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 14px 28px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-1px); }
+
+    /* ── DIVIDER ── */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--border), transparent);
+      margin: 0;
+    }
+
+    /* ── SECTION ── */
+    section {
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 100px 48px;
+    }
+
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+
+    .section-label::before {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(36px, 5vw, 60px);
+      font-weight: 300;
+      line-height: 1.1;
+      margin-bottom: 24px;
+    }
+
+    .section-title em { font-style: italic; color: var(--gold); }
+
+    .section-body {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(16px, 2vw, 19px);
+      font-weight: 300;
+      color: rgba(240,237,232,0.75);
+      line-height: 1.8;
+      max-width: 680px;
+    }
+
+    /* ── PHILOSOPHY ── */
+    .philosophy-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1px;
+      margin-top: 64px;
+      border: 1px solid var(--border);
+      background: var(--border);
+    }
+
+    .philosophy-card {
+      background: var(--surface);
+      padding: 40px 36px;
+      transition: background 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .philosophy-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transition: transform 0.3s;
+    }
+    .philosophy-card:hover { background: var(--surface2); }
+    .philosophy-card:hover::after { transform: scaleX(1); }
+
+    .card-icon {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--gold-dim);
+      border-radius: 8px;
+      margin-bottom: 20px;
+      background: var(--gold-glow);
+    }
+
+    .card-icon svg { width: 22px; height: 22px; stroke: var(--gold); fill: none; stroke-width: 1.5; }
+
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      color: var(--white);
+    }
+
+    .card-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ── APP SECTION ── */
+    .app-section {
+      background: linear-gradient(135deg, var(--surface) 0%, var(--bg) 100%);
+    }
+
+    .app-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .app-layout { grid-template-columns: 1fr; gap: 48px; }
+    }
+
+    .app-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      background: var(--gold-dim);
+      color: var(--gold);
+      padding: 5px 12px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+    }
+
+    .app-features {
+      margin-top: 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .app-feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 16px 20px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--gold-glow);
+      transition: border-color 0.2s;
+    }
+    .app-feature:hover { border-color: var(--gold-dim); }
+
+    .feature-icon {
+      width: 36px; height: 36px;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 6px;
+      background: var(--gold-dim);
+    }
+    .feature-icon svg { width: 18px; height: 18px; stroke: var(--gold); fill: none; stroke-width: 1.5; }
+
+    .feature-content {}
+    .feature-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+    .feature-desc {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ── PHONE MOCKUP ── */
+    .phone-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .phone {
+      width: 240px;
+      height: 480px;
+      background: linear-gradient(145deg, #1a1a24, #0d0d14);
+      border-radius: 42px;
+      border: 1.5px solid rgba(255,255,255,0.12);
+      position: relative;
+      box-shadow:
+        0 40px 80px rgba(0,0,0,0.8),
+        0 0 0 1px rgba(255,255,255,0.04),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+      overflow: hidden;
+      animation: phone-float 6s ease-in-out infinite;
+    }
+
+    @keyframes phone-float {
+      0%, 100% { transform: translateY(0) rotate(-1deg); }
+      50% { transform: translateY(-12px) rotate(1deg); }
+    }
+
+    .phone-notch {
+      width: 80px; height: 22px;
+      background: #060608;
+      border-radius: 0 0 16px 16px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    .phone-screen {
+      padding: 8px 14px 20px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .phone-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0 16px;
+    }
+
+    .phone-header-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: 0.05em;
+    }
+
+    .phone-header-icon {
+      width: 28px; height: 28px;
+      background: var(--gold-dim);
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .phone-scan-area {
+      flex: 1;
+      border: 1.5px solid rgba(200,169,110,0.35);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: linear-gradient(135deg, rgba(200,169,110,0.03), rgba(74,158,255,0.03));
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .scan-line {
+      position: absolute;
+      left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+      animation: scan 2.5s ease-in-out infinite;
+      opacity: 0.8;
+    }
+
+    @keyframes scan {
+      0% { top: 10%; opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { top: 90%; opacity: 0; }
+    }
+
+    .corner {
+      position: absolute;
+      width: 14px; height: 14px;
+      border-color: var(--gold);
+      border-style: solid;
+      opacity: 0.7;
+    }
+    .corner-tl { top: 10px; left: 10px; border-width: 2px 0 0 2px; border-radius: 3px 0 0 0; }
+    .corner-tr { top: 10px; right: 10px; border-width: 2px 2px 0 0; border-radius: 0 3px 0 0; }
+    .corner-bl { bottom: 10px; left: 10px; border-width: 0 0 2px 2px; border-radius: 0 0 0 3px; }
+    .corner-br { bottom: 10px; right: 10px; border-width: 0 2px 2px 0; border-radius: 0 0 3px 0; }
+
+    .scan-icon { opacity: 0.25; }
+
+    .phone-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #4ade80;
+      padding: 6px 10px;
+      background: rgba(74,222,128,0.08);
+      border: 1px solid rgba(74,222,128,0.2);
+      border-radius: 6px;
+    }
+    .status-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: #4ade80;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    .phone-glow {
+      position: absolute;
+      inset: -60px;
+      background: radial-gradient(circle at 50% 50%, rgba(200,169,110,0.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* ── PRIVACY SECTION ── */
+    .privacy-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-top: 48px;
+    }
+
+    .privacy-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px 28px;
+      transition: all 0.3s;
+      position: relative;
+    }
+    .privacy-card:hover {
+      border-color: var(--gold-dim);
+      transform: translateY(-2px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .privacy-card-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 48px;
+      font-weight: 300;
+      color: var(--gold-dim);
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
+    .privacy-card-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+
+    .privacy-card-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .footer-tagline {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 15px;
+      font-style: italic;
+      color: var(--muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .footer-links a {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--gold); }
+
+    .footer-copy {
+      font-size: 11px;
+      color: rgba(240,237,232,0.2);
+      letter-spacing: 0.08em;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      .section-inner { padding: 72px 24px; }
+      footer { padding: 40px 24px; }
+    }
+  </style>
+</head>
 <body>
 
-<h1>Newton Apps</h1>
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <svg class="nav-logo-icon" viewBox="0 0 34 34" fill="none">
+      <circle cx="17" cy="17" r="16" stroke="#c8a96e" stroke-width="1.2"/>
+      <circle cx="17" cy="17" r="6" fill="#c8a96e" opacity="0.9"/>
+      <line x1="17" y1="1" x2="17" y2="8" stroke="#c8a96e" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="17" y1="26" x2="17" y2="33" stroke="#c8a96e" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="1" y1="17" x2="8" y2="17" stroke="#c8a96e" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="26" y1="17" x2="33" y2="17" stroke="#c8a96e" stroke-width="1.2" stroke-linecap="round"/>
+    </svg>
+    <span class="nav-logo-text">Newton Apps</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#philosophy">Philosophy</a></li>
+    <li><a href="#apps">Apps</a></li>
+    <li><a href="#privacy">Privacy Policy</a></li>
+  </ul>
+</nav>
 
-<p>We build fast, private and practical mobile tools.</p>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-orb orb-1"></div>
+  <div class="hero-bg-orb orb-2"></div>
 
-<h2>Apps</h2>
+  <div class="hero-eyebrow">
+    <svg viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><circle cx="6" cy="6" r="2" fill="currentColor"/></svg>
+    Solo Studio · Privacy First
+  </div>
 
-<ul>
-<li>
-<a href="/guardianscan">GuardianScan Pro</a>  
-Fast offline PDF scanner.
-</li>
-</ul>
+  <h1 class="hero-title">
+    Structured<br><em>Intelligence</em><br>for Every Decision
+  </h1>
 
+  <p class="hero-subtitle">
+    Newton Apps crafts privacy-first iOS tools that think with you — never about you. 
+    No cloud. No accounts. No compromise.
+  </p>
+
+  <div class="hero-cta">
+    <a href="#apps" class="btn-primary">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1L7 10M7 10L4 7M7 10L10 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12H12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Explore Apps
+    </a>
+    <a href="https://github.com/newtonapps" class="btn-secondary">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1C3.686 1 1 3.686 1 7c0 2.654 1.721 4.904 4.107 5.699.3.054.41-.13.41-.29v-1.02c-1.669.362-2.02-.804-2.02-.804-.273-.693-.666-.878-.666-.878-.545-.372.04-.365.04-.365.602.042.919.618.919.618.535.917 1.403.652 1.745.499.054-.388.209-.652.38-.802-1.333-.151-2.733-.666-2.733-2.964 0-.655.234-1.19.618-1.61-.062-.152-.268-.762.058-1.588 0 0 .504-.162 1.65.616A5.75 5.75 0 017 4.797c.51.002 1.023.069 1.503.202 1.145-.778 1.648-.616 1.648-.616.327.826.121 1.436.06 1.588.385.42.617.955.617 1.61 0 2.305-1.403 2.81-2.74 2.959.215.186.407.551.407 1.11v1.644c0 .161.109.347.413.288C11.281 11.902 13 9.653 13 7c0-3.314-2.686-6-6-6z" fill="currentColor"/></svg>
+      GitHub
+    </a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PHILOSOPHY -->
+<section id="philosophy">
+  <div class="section-inner">
+    <div class="section-label reveal">Philosophy</div>
+    <h2 class="section-title reveal">Built on principles,<br>not <em>compromises</em></h2>
+    <p class="section-body reveal">
+      Newton Apps was founded on a singular belief: your most sensitive data belongs on your device, 
+      not in someone else's server. Every product we ship is an expression of this commitment — 
+      honest pricing, on-device intelligence, and zero mandatory accounts.
+    </p>
+
+    <div class="philosophy-grid">
+      <div class="philosophy-card reveal">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="card-title">On-Device Processing</div>
+        <p class="card-text">Every computation happens locally. Your data never leaves your phone — not to our servers, not to third parties, not anywhere.</p>
+      </div>
+
+      <div class="philosophy-card reveal">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+        </div>
+        <div class="card-title">No Mandatory Accounts</div>
+        <p class="card-text">Install, open, use. No sign-up flows, no email verification, no onboarding friction. Your identity is yours to keep.</p>
+      </div>
+
+      <div class="philosophy-card reveal">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        </div>
+        <div class="card-title">Honest Pricing</div>
+        <p class="card-text">Straightforward subscriptions or one-time purchases. No dark patterns, no surprise charges, no "freemium" traps designed to frustrate you into paying.</p>
+      </div>
+
+      <div class="philosophy-card reveal">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div class="card-title">Structured Intelligence</div>
+        <p class="card-text">Apps that bring analytical clarity to personal decisions — finance, health, documents, time. Tools that help you think better, not think for you.</p>
+      </div>
+
+      <div class="philosophy-card reveal">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        </div>
+        <div class="card-title">Solo Studio Ethos</div>
+        <p class="card-text">Every line of code, every design decision, every word in our App Store listings is crafted by a single developer who cares deeply about quality.</p>
+      </div>
+
+      <div class="philosophy-card reveal">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+        </div>
+        <div class="card-title">Global × Local</div>
+        <p class="card-text">Designed for both Turkish and international markets. Localized thoughtfully — not just translated — for professionals who expect premium software.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- APP: GUARDIANSCAN PRO -->
+<section id="apps" class="app-section">
+  <div class="section-inner">
+    <div class="section-label reveal">Flagship App</div>
+
+    <div class="app-layout">
+      <div>
+        <div class="app-badge reveal">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4" stroke="currentColor" stroke-width="1.2"/><path d="M3 5L4.5 6.5L7 3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Available on the App Store
+        </div>
+
+        <h2 class="section-title reveal">Guardian<em>Scan</em> Pro</h2>
+
+        <p class="section-body reveal">
+          The privacy-first document scanner for legal, healthcare, and finance professionals. 
+          Scan, digitize, and organize sensitive documents with absolute certainty 
+          that your data never leaves your device.
+        </p>
+
+        <div class="app-features">
+          <div class="app-feature reveal">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div class="feature-content">
+              <div class="feature-title">100% On-Device OCR</div>
+              <div class="feature-desc">All text recognition and processing happens locally via Apple's Vision framework. Zero cloud dependencies, zero uploads.</div>
+            </div>
+          </div>
+
+          <div class="app-feature reveal">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+            </div>
+            <div class="feature-content">
+              <div class="feature-title">Smart Document Detection</div>
+              <div class="feature-desc">Automatically detects edges, corrects perspective, and enhances readability in a single tap.</div>
+            </div>
+          </div>
+
+          <div class="app-feature reveal">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="feature-content">
+              <div class="feature-title">PDF & Secure Export</div>
+              <div class="feature-desc">Export as searchable PDF, share via standard iOS sharing sheet. You control where your files go.</div>
+            </div>
+          </div>
+
+          <div class="app-feature reveal">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+            </div>
+            <div class="feature-content">
+              <div class="feature-title">Enterprise Ready</div>
+              <div class="feature-desc">Deployable via Apple Business Manager. Built for organizations that cannot compromise on data sovereignty.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PHONE -->
+      <div class="phone-wrapper">
+        <div style="position:relative">
+          <div class="phone-glow"></div>
+          <div class="phone">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="phone-header">
+                <div class="phone-header-title">GuardianScan</div>
+                <div class="phone-header-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c8a96e" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+              </div>
+              <div class="phone-scan-area">
+                <div class="scan-line"></div>
+                <div class="corner corner-tl"></div>
+                <div class="corner corner-tr"></div>
+                <div class="corner corner-bl"></div>
+                <div class="corner corner-br"></div>
+                <svg class="scan-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#c8a96e" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+              </div>
+              <div class="phone-status">
+                <div class="status-dot"></div>
+                On-Device · Encrypted
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PRIVACY POLICY -->
+<section id="privacy">
+  <div class="section-inner">
+    <div class="section-label reveal">Legal</div>
+    <h2 class="section-title reveal">Privacy <em>Policy</em></h2>
+    <p class="section-body reveal">
+      Our privacy policy is simple because our approach to data is simple: we don't collect it. 
+      Below is the complete policy for all Newton Apps products, written in plain language.
+    </p>
+
+    <div class="privacy-grid">
+
+      <div class="privacy-card reveal">
+        <div class="privacy-card-num">01</div>
+        <div class="privacy-card-title">Data We Collect</div>
+        <p class="privacy-card-text">
+          Newton Apps collects <strong style="color:var(--gold)">no personal data whatsoever</strong>. 
+          We do not collect names, emails, device identifiers, usage analytics, crash reports sent to our servers, 
+          or any information that could identify you as an individual.
+        </p>
+      </div>
+
+      <div class="privacy-card reveal">
+        <div class="privacy-card-num">02</div>
+        <div class="privacy-card-title">Your Documents & Files</div>
+        <p class="privacy-card-text">
+          All documents, scans, and files you process within our apps are stored exclusively 
+          on your device. They are never transmitted to external servers, third-party services, 
+          or Newton Apps infrastructure. We have no access to your files — by design.
+        </p>
+      </div>
+
+      <div class="privacy-card reveal">
+        <div class="privacy-card-num">03</div>
+        <div class="privacy-card-title">Third-Party Services</div>
+        <p class="privacy-card-text">
+          Our apps do not integrate advertising SDKs, analytics platforms, or tracking frameworks. 
+          The only third-party interaction is the Apple App Store for purchase verification, 
+          which is governed entirely by Apple's own privacy policy.
+        </p>
+      </div>
+
+      <div class="privacy-card reveal">
+        <div class="privacy-card-num">04</div>
+        <div class="privacy-card-title">Apple Frameworks</div>
+        <p class="privacy-card-text">
+          We use Apple's native frameworks (Vision, Core Data, SwiftData, StoreKit) exclusively. 
+          These operate locally on your device. Apple's standard iOS privacy protections — 
+          camera access, photo library access — require your explicit permission.
+        </p>
+      </div>
+
+      <div class="privacy-card reveal">
+        <div class="privacy-card-num">05</div>
+        <div class="privacy-card-title">Children's Privacy</div>
+        <p class="privacy-card-text">
+          Our apps are designed for professional adult users. We do not knowingly direct 
+          any product toward children under 13, and since we collect no data at all, 
+          we cannot inadvertently collect data from minors.
+        </p>
+      </div>
+
+      <div class="privacy-card reveal">
+        <div class="privacy-card-num">06</div>
+        <div class="privacy-card-title">Policy Updates</div>
+        <p class="privacy-card-text">
+          If this policy changes, updated versions will be published here and reflected in each 
+          app's App Store listing. Material changes affecting your use will be communicated 
+          through app update notes. Last updated: <strong style="color:var(--white)">March 2025</strong>.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Contact note -->
+    <div style="margin-top: 48px; padding: 28px 32px; border: 1px solid var(--border); border-radius: 10px; display: flex; align-items: flex-start; gap: 16px;" class="reveal">
+      <div style="flex-shrink:0; width:36px;height:36px;background:var(--gold-dim);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c8a96e" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Privacy Inquiries</div>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:300;color:var(--muted);line-height:1.6;">
+          Questions about privacy, data handling, or enterprise deployment? 
+          Contact us at <a href="mailto:privacy@newtonapps.org" style="color:var(--gold);text-decoration:none;">privacy@newtonapps.org</a>. 
+          We respond to all inquiries within 48 hours.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FOOTER -->
 <footer>
-<a href="/privacy">Privacy Policy</a>
+  <div class="footer-logo">
+    <svg width="28" height="28" viewBox="0 0 34 34" fill="none">
+      <circle cx="17" cy="17" r="16" stroke="#c8a96e" stroke-width="1.2"/>
+      <circle cx="17" cy="17" r="6" fill="#c8a96e" opacity="0.85"/>
+      <line x1="17" y1="1" x2="17" y2="8" stroke="#c8a96e" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="17" y1="26" x2="17" y2="33" stroke="#c8a96e" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="1" y1="17" x2="8" y2="17" stroke="#c8a96e" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="26" y1="17" x2="33" y2="17" stroke="#c8a96e" stroke-width="1.2" stroke-linecap="round"/>
+    </svg>
+    <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:14px;letter-spacing:0.12em;text-transform:uppercase;color:var(--white);">Newton Apps</span>
+  </div>
+
+  <p class="footer-tagline">"Structured Intelligence for Personal Decision-Makers"</p>
+
+  <div class="footer-links">
+    <a href="https://newtonapps.org">Website</a>
+    <a href="https://github.com/newtonapps">GitHub</a>
+    <a href="#apps">GuardianScan Pro</a>
+    <a href="#privacy">Privacy Policy</a>
+    <a href="mailto:privacy@newtonapps.org">Contact</a>
+  </div>
+
+  <p class="footer-copy">© 2025 Newton Apps · All rights reserved · Istanbul, Turkey</p>
 </footer>
+
+<script>
+  // Reveal on scroll
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => observer.observe(el));
+
+  // Stagger cards
+  document.querySelectorAll('.philosophy-grid .philosophy-card, .privacy-grid .privacy-card').forEach((el, i) => {
+    el.style.transitionDelay = `${i * 0.07}s`;
+  });
+</script>
 
 </body>
 </html>
